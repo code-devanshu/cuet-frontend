@@ -41,7 +41,9 @@ export default function UploadForm() {
       setTimeout(() => setProgress(40), 500);
       setTimeout(() => setProgress(70), 1000);
 
-      const res = await axios.post("http://localhost:8000/upload", formData, {
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const res = await axios.post(`${backendUrl}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
