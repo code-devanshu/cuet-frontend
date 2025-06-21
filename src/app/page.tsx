@@ -36,6 +36,9 @@ export const metadata = {
             "Get your CUET UG 2025 score instantly by uploading OMR PDF and answer key HTML files.",
         images: ["https://cuet-frontend.vercel.app//og-preview.png"],
     },
+    verification: {
+      google: "nRNC9qtM0cQ39ZyShV4d-jRhFoES1Ut9SniBisJcDso",
+    },
 };
 
 export default function Home() {
