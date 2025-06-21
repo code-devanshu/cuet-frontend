@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://cuet-frontend.vercel.app/
+
+# Sitemaps
+Sitemap: https://cuet-frontend.vercel.app/sitemap.xml

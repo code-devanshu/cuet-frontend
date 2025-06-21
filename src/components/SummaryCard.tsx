@@ -3,6 +3,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { SummaryItem } from "@/types/interface";
 
 const categoryBadges: Record<string, { icon: string; color: string }> = {
   Physics: { icon: "🧲", color: "bg-blue-100 text-blue-800" },
@@ -12,8 +13,7 @@ const categoryBadges: Record<string, { icon: string; color: string }> = {
   General: { icon: "📘", color: "bg-gray-100 text-gray-800" },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function SummaryCards({ summary }: { summary: any[] }) {
+export default function SummaryCards({ summary }: { summary: SummaryItem[] }) {
   if (!summary || summary.length === 0) return null;
 
   const totalStats = summary.reduce(
