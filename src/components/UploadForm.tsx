@@ -42,6 +42,7 @@ export default function UploadForm() {
   const [htmlFiles, setHtmlFiles] = useState<FileList | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [summary, setSummary] = useState<any[]>([]);
   const [student, setStudent] = useState<{ Name: string; "Application No": string } | null>(null);
 
