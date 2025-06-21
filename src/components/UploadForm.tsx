@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,13 +10,40 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import SummaryCards from "./SummaryCard";
 
+const mockApiResponse = {
+  student: {
+    Name: "Rober William",
+    "Application No": "99999999999999",
+  },
+  summary: [
+    {
+      Category: "Physics",
+      Total: 50,
+      Attempted: 44,
+      Correct: 39,
+      Incorrect: 5,
+      "Not Answered": 6,
+      Score: 190,
+    },
+    {
+      Category: "Chemistry",
+      Total: 50,
+      Attempted: 50,
+      Correct: 43,
+      Incorrect: 7,
+      "Not Answered": 0,
+      Score: 208,
+    },
+  ],
+};
+
 export default function UploadForm() {
   const [pdfFiles, setPdfFiles] = useState<FileList | null>(null);
   const [htmlFiles, setHtmlFiles] = useState<FileList | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [summary, setSummary] = useState<any[]>([]);
+  const [student, setStudent] = useState<{ Name: string; "Application No": string } | null>(null);
 
   const handleUpload = async () => {
     if (!pdfFiles || !htmlFiles) {
@@ -37,18 +64,20 @@ export default function UploadForm() {
     setIsUploading(true);
 
     try {
-      // Simulate progress
-      setTimeout(() => setProgress(40), 500);
-      setTimeout(() => setProgress(70), 1000);
+      setTimeout(() => setProgress(40), 400);
+      setTimeout(() => setProgress(70), 800);
 
       const backendUrl =
         process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
       const res = await axios.post(`${backendUrl}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       setProgress(100);
       setSummary(res.data.summary || []);
+      setStudent(res.data.student || null);
+
       toast.success("✅ Scoring complete!", { id: toastId });
     } catch (err) {
       console.error(err);
@@ -77,9 +106,7 @@ export default function UploadForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="html-upload">
-              Upload Correct Answer HTML Files
-            </Label>
+            <Label htmlFor="html-upload">Upload Correct Answer HTML Files</Label>
             <Input
               id="html-upload"
               type="file"
@@ -89,9 +116,24 @@ export default function UploadForm() {
             />
           </div>
 
-          <Button onClick={handleUpload} disabled={isUploading}>
-            {isUploading ? "Processing..." : "Upload & Calculate Score"}
-          </Button>
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <Button onClick={handleUpload} disabled={isUploading}>
+              {isUploading ? "Processing..." : "Upload & Calculate Score"}
+            </Button>
+
+            {process.env.NODE_ENV === "development" && (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setStudent(mockApiResponse.student);
+                  setSummary(mockApiResponse.summary);
+                }}
+              >
+                Load Sample Data
+              </Button>
+            )}
+          </div>
 
           {progress !== null && (
             <div className="pt-2">
@@ -101,7 +143,23 @@ export default function UploadForm() {
         </CardContent>
       </Card>
 
-      {summary.length > 0 && <SummaryCards summary={summary} />}
+      {summary.length > 0 && (
+        <div className="space-y-4">
+          {student && (
+            <Card>
+              <CardContent className="p-4 text-sm">
+                <p>
+                  <strong>Name:</strong> {student.Name}
+                </p>
+                <p>
+                  <strong>Application No:</strong> {student["Application No"]}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+          <SummaryCards summary={summary} />
+        </div>
+      )}
     </div>
   );
 }
